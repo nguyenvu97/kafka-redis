@@ -7,22 +7,21 @@ Khi hệ thống lỗi:
 Nếu có lỗi trong hệ thống, Kafka ghi nhận lỗi và Consumer gửi email thông báo lỗi tới khách hàng.
 Khi kho không đủ hàng:
 Nếu không đủ hàng trong kho, Kafka lưu thông điệp và Consumer gửi email thông báo hết hàng đến khách hàng.
-→
 Lưu trữ thông điệp khi có sự cố: Kafka sẽ lưu trữ tất cả các thông điệp trong khi hệ thống có thể xử lý lại sau, nếu có sự cố xảy ra.
-
 Xử lý nhiều email cùng lúc: Kafka giúp xử lý hàng loạt email một cách song song, giảm tải cho hệ thống và tăng cường hiệu suất.
-
 Ghi nhận và xử lý lại thông điệp khi có sự cố: Nếu một sự cố xảy ra, Kafka sẽ đảm bảo thông điệp không bị mất và có thể được xử lý lại khi hệ thống ổn định.
 
-
-
-
-
-
-
-
 2: Multi-Thread (Khi thanh toán không nhận được phản hồi từ VnPay)
-Em tạo một cron job chạy định kỳ (ví dụ mỗi 5 phút) để quét các giao dịch chưa nhận được callback. Cron job sẽ kiểm tra các giao dịch có trạng thái pending và xác định xem các giao dịch này có vượt quá thời gian chờ (với timeout của VnPay là 15 phút) hay không. Nếu có, hệ thống sẽ thực hiện kiểm tra lại hoặc thử lại các giao dịch đó. Việc sử dụng multi-threading thông qua ExecutorService (Scheduled Thread Pool) giúp xử lý đồng thời nhiều giao dịch mà không tạo ra quá nhiều thread dư thừa. (Em sẽ giới hạn số lượng thread tối thiểu và tối đa dựa trên số luồng CPU của máy), từ đó tối ưu hóa hiệu suất mà không làm quá tải tài nguyên hệ thống.
+Em tạo một cron job chạy định kỳ (ví dụ mỗi 30 giây) để quét các giao dịch chưa nhận được callback.
+Cron job sẽ kiểm tra các giao dịch có trạng thái pending và xác định xem các giao dịch này có vượt quá thời gian chờ (với timeout của VnPay là 15 phút) hay không. 
+Nếu có, hệ thống sẽ thực hiện kiểm tra lại hoặc thử lại các giao dịch đó. Việc sử dụng multi-threading thông qua ExecutorService (Scheduled Thread Pool) giúp xử lý đồng thời nhiều giao dịch mà không tạo ra quá nhiều thread dư thừa.
+(Em sẽ giới hạn số lượng thread tối thiểu và tối đa dựa trên số luồng CPU của máy),
+từ đó tối ưu hóa hiệu suất mà không làm quá tải tài nguyên hệ thống.
+
+synchronized : Khi thanh toán thành công và em trừ quantity sản phâm thi em dung để đồng bộ dữ liệu 
+3.caching product em luu trên Ram của server redis
+Em tạo ra 2 cron jon chay đinh kỳ job 1 em cho 1 ngay chạy 1 lần em xe xóa caching (hoặc tg cho key đó tồn tại của key thì redis tự dộng xóa ) trước rồi mới gọi lên theo tg đạt trước đó , 
+job 2 em cho tg chay tuy thuộc vao dự án để động bộ dữ liệu của db vs redis dựa vào check update_at 
 
 
 
