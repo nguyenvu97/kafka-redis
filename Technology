@@ -1,0 +1,40 @@
+Dự án Xây dựng website bán hàng: Được triển khai theo mô hình microservice, trong đó em có được giao cho làm 2 service: order và payment(em được chỉ định dùng VnPay để xử lý thanh toán),caching product.
+
+1: Kafka (Dùng gửi email cho khách hàng)
+Khi khách hàng đặt hàng thành công:
+Kafka được sử dụng để gửi thông báo email xác nhận đơn hàng. Producer gửi thông điệp về việc đặt hàng thành công vào Kafka, và Consumer xử lý thông điệp đó để gửi email.
+Khi hệ thống lỗi:
+Nếu có lỗi trong hệ thống, Kafka ghi nhận lỗi và Consumer gửi email thông báo lỗi tới khách hàng.
+Khi kho không đủ hàng:
+Nếu không đủ hàng trong kho, Kafka lưu thông điệp và Consumer gửi email thông báo hết hàng đến khách hàng.
+→
+Lưu trữ thông điệp khi có sự cố: Kafka sẽ lưu trữ tất cả các thông điệp trong khi hệ thống có thể xử lý lại sau, nếu có sự cố xảy ra.
+
+Xử lý nhiều email cùng lúc: Kafka giúp xử lý hàng loạt email một cách song song, giảm tải cho hệ thống và tăng cường hiệu suất.
+
+Ghi nhận và xử lý lại thông điệp khi có sự cố: Nếu một sự cố xảy ra, Kafka sẽ đảm bảo thông điệp không bị mất và có thể được xử lý lại khi hệ thống ổn định.
+
+
+
+
+
+
+
+
+2: Multi-Thread (Khi thanh toán không nhận được phản hồi từ VnPay)
+Em tạo một cron job chạy định kỳ (ví dụ mỗi 5 phút) để quét các giao dịch chưa nhận được callback. Cron job sẽ kiểm tra các giao dịch có trạng thái pending và xác định xem các giao dịch này có vượt quá thời gian chờ (với timeout của VnPay là 15 phút) hay không. Nếu có, hệ thống sẽ thực hiện kiểm tra lại hoặc thử lại các giao dịch đó. Việc sử dụng multi-threading thông qua ExecutorService (Scheduled Thread Pool) giúp xử lý đồng thời nhiều giao dịch mà không tạo ra quá nhiều thread dư thừa. (Em sẽ giới hạn số lượng thread tối thiểu và tối đa dựa trên số luồng CPU của máy), từ đó tối ưu hóa hiệu suất mà không làm quá tải tài nguyên hệ thống.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
