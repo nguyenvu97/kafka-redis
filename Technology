@@ -25,7 +25,8 @@ Em tao ra 2 cron job :
   job2: khi nguoi dung update product vs commit thành công thi em sẽ gửi bât đồng bộ vao queue trên application rồi em cho 2 thread đọc queue đó , đọc xong dữ liệu nào thi xoa dữ liệu đó trong queue đi
 
 
-
+ELk:
+ 
 
 
 
