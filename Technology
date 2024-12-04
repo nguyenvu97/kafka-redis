@@ -20,8 +20,9 @@ từ đó tối ưu hóa hiệu suất mà không làm quá tải tài nguyên h
 
 synchronized : Khi thanh toán thành công và em trừ quantity sản phâm thi em dung để đồng bộ dữ liệu 
 3.caching product em luu trên Ram của server redis
-Em tạo ra 2 cron jon chay đinh kỳ job 1 em cho 1 ngay chạy 1 lần em xe xóa caching (hoặc tg cho key đó tồn tại của key thì redis tự dộng xóa ) trước rồi mới gọi lên theo tg đạt trước đó , 
-job 2 em cho tg chay tuy thuộc vao dự án để động bộ dữ liệu của db vs redis dựa vào check update_at 
+Em tao ra 2 cron job :
+ job 1 : em sẽ đồng bộ theo nghe từ ĐB lên redis thi em xoa key trước rồi mới đồng bộ lên (nhằm mục đích là sẽ đồng bộ dữ liệu redis theo ngày ) 
+  job2: khi nguoi dung update product vs commit thành công thi em sẽ gửi bât đồng bộ vao queue trên application rồi em cho 2 thread đọc queue đó , đọc xong dữ liệu nào thi xoa dữ liệu đó trong queue đi
 
 
 
